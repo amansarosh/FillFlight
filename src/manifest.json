@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Ahsio SimBrief Extension",
+  "description": "Store and autofill MSN and SELCAL information for SimBrief",
+  "version": "1.0",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.simbrief.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.simbrief.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "ahiso.html"
+  }
+}
