@@ -3,6 +3,10 @@ const STORAGE_KEY = 'ahsio_aircraft_info';
 
 function populateTable(aircraftInfo) {
     const tableBody = document.getElementById('aircraftTableBody');
+    if (!tableBody) {
+        console.error("Table body element not found");
+        return;
+    }
     tableBody.innerHTML = '';
     
     aircraftInfo.forEach((info, index) => {
@@ -116,7 +120,12 @@ function addNewEntry() {
         chrome.storage.local.set({ [STORAGE_KEY]: storedInfo }, () => {
             console.log("New empty entry added");
             populateTable(storedInfo);
-            editRow(document.getElementById('aircraftTableBody').lastElementChild, newInfo, storedInfo.length - 1);
+            const tableBody = document.getElementById('aircraftTableBody');
+            if (tableBody && tableBody.lastElementChild) {
+                editRow(tableBody.lastElementChild, newInfo, storedInfo.length - 1);
+            } else {
+                console.error("Unable to find last table row for editing");
+            }
         });
     });
 }
@@ -129,11 +138,19 @@ function loadStoredInfo() {
     });
 }
 
-// Load stored info when popup opens
-loadStoredInfo();
+function initializePopup() {
+    loadStoredInfo();
 
-// Add event listener to the "Add New Entry" button
-document.getElementById('addButton').addEventListener('click', addNewEntry);
+    const addButton = document.getElementById('addButton');
+    if (addButton) {
+        addButton.addEventListener('click', addNewEntry);
+    } else {
+        console.error("Add button not found");
+    }
+}
+
+// Wait for the DOM to be fully loaded before initializing
+document.addEventListener('DOMContentLoaded', initializePopup);
 
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
