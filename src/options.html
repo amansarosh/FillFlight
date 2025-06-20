@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FillFlight Extension Options</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-800 text-white min-h-screen font-sans p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">FillFlight SimBrief Extension Options</h1>
+    <p class="mb-4">Manage your aircraft registrations, MSN, and SELCAL values.</p>
+    
+    <div class="space-x-2 mb-6">
+      <button id="addButton" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Add New Entry</button>
+      <button id="backupButton" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded">Backup Data</button>
+      <button id="restoreButton" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded">Restore Backup</button>
+    </div>
+
+    <table class="table-fixed w-full border border-slate-700 text-sm">
+      <thead class="bg-slate-800">
+        <tr>
+          <th class="border border-slate-700 p-2">Registration</th>
+          <th class="border border-slate-700 p-2">MSN</th>
+          <th class="border border-slate-700 p-2">SELCAL</th>
+          <th class="border border-slate-700 p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="aircraftTableBody" class="divide-y divide-slate-700">
+        <!-- Populated by fillflight.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="mt-10 text-center text-sm text-slate-400">
+    Made by <a href="https://github.com/amansarosh" target="_blank" class="text-blue-400 hover:underline">Aman Sarosh</a> · <a href="https://github.com/amansarosh/FillFlight" target="_blank" class="hover:underline">View on GitHub</a>
+  </footer>
+
+  <script src="fillflight.js"></script>
+</body>
+</html>
+
