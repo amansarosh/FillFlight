@@ -1,6 +1,8 @@
+![FillFlight](/fillflight.png)
+
 # FillFlight
 
-"ahiso" is a Chrome Extension that allows users the add and autofill the Aircraft Registration, SELCAL, and MSN into a SimBrief Briefing.
+"FillFlight" is a Chrome Extension that allows users the add and autofill the Aircraft Registration, SELCAL, and MSN into a SimBrief Briefing.
 
 ## Installation
 
