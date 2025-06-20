@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Ahsio SimBrief Extension",
+  "name": "FillFlight SimBrief Extension",
   "description": "Store and autofill MSN and SELCAL information for SimBrief",
   "version": "1.0",
   "permissions": [
@@ -17,6 +17,13 @@
     }
   ],
   "action": {
-    "default_popup": "ahiso.html"
-  }
+    "default_popup": "fillflight.html"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["tailwind.min.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
