@@ -19,19 +19,19 @@ function populateTable(aircraftInfo) {
 
   aircraftInfo.sort((a, b) => a.registration.localeCompare(b.registration));
 
-  aircraftInfo.forEach((info, index) => {
+  aircraftInfo.forEach((info) => {
     const row = tableBody.insertRow();
     row.insertCell(0).textContent = info.registration;
     row.insertCell(1).textContent = info.msn;
     row.insertCell(2).textContent = info.selcal;
 
     const actionsCell = row.insertCell(3);
-    actionsCell.appendChild(createButton('Edit', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => editRow(row, info, index)));
-    actionsCell.appendChild(createButton('Delete', 'bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded', () => deleteRow(index, info.registration)));
+    actionsCell.appendChild(createButton('Edit', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => editRow(row, info)));
+    actionsCell.appendChild(createButton('Delete', 'bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded', () => deleteRow(info.registration)));
   });
 }
 
-function editRow(row, info, index, isNew = false) {
+function editRow(row, info, isNew = false) {
   row.classList.add('edit-mode');
   const placeholders = ['REG', 'MSN', 'SELCAL'];
 
@@ -47,11 +47,11 @@ function editRow(row, info, index, isNew = false) {
 
   const actionsCell = row.cells[3];
   actionsCell.innerHTML = '';
-  actionsCell.appendChild(createButton('Save', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => saveEdit(row, index, isNew)));
-  actionsCell.appendChild(createButton('Cancel', 'bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded', () => cancelEdit(row, info, index, isNew)));
+  actionsCell.appendChild(createButton('Save', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => saveEdit(row, info.registration, isNew)));
+  actionsCell.appendChild(createButton('Cancel', 'bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded', () => cancelEdit(row, info, isNew)));
 }
 
-function saveEdit(row, index, isNew = false) {
+function saveEdit(row, originalRegistration, isNew = false) {
   const newInfo = {
     registration: row.cells[0].firstChild.value.toUpperCase(),
     msn: row.cells[1].firstChild.value,
@@ -70,18 +70,23 @@ function saveEdit(row, index, isNew = false) {
 
   chrome.storage.local.get(STORAGE_KEY, (result) => {
     const storedInfo = result[STORAGE_KEY] || [];
+    
     if (isNew) {
       storedInfo.push(newInfo);
     } else {
-      storedInfo[index] = newInfo;
+      const index = storedInfo.findIndex(info => info.registration === originalRegistration);
+      if (index !== -1) {
+        storedInfo[index] = newInfo;
+      }
     }
+    
     chrome.storage.local.set({ [STORAGE_KEY]: storedInfo }, () => {
       populateTable(storedInfo);
     });
   });
 }
 
-function cancelEdit(row, info, index, isNew = false) {
+function cancelEdit(row, info, isNew = false) {
   if (isNew) {
     row.remove();
     return;
@@ -93,19 +98,19 @@ function cancelEdit(row, info, index, isNew = false) {
 
   const actionsCell = row.cells[3];
   actionsCell.innerHTML = '';
-  actionsCell.appendChild(createButton('Edit', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => editRow(row, info, index)));
-  actionsCell.appendChild(createButton('Delete', 'bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded', () => deleteRow(index, info.registration)));
+  actionsCell.appendChild(createButton('Edit', 'bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2', () => editRow(row, info)));
+  actionsCell.appendChild(createButton('Delete', 'bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded', () => deleteRow(info.registration)));
 
   row.classList.remove('edit-mode');
 }
 
-function deleteRow(index, registration) {
+function deleteRow(registration) {
   if (confirm(`Are you sure you want to delete ${registration}?`)) {
     chrome.storage.local.get(STORAGE_KEY, (result) => {
       const storedInfo = result[STORAGE_KEY] || [];
-      storedInfo.splice(index, 1);
-      chrome.storage.local.set({ [STORAGE_KEY]: storedInfo }, () => {
-        populateTable(storedInfo);
+      const filteredInfo = storedInfo.filter(info => info.registration !== registration);
+      chrome.storage.local.set({ [STORAGE_KEY]: filteredInfo }, () => {
+        populateTable(filteredInfo);
       });
     });
   }
@@ -116,7 +121,7 @@ function addNewEntry() {
   const row = tableBody.insertRow();
   for (let i = 0; i < 3; i++) row.insertCell(i);
   row.insertCell(3);
-  editRow(row, { registration: '', msn: '', selcal: '' }, -1, true);
+  editRow(row, { registration: '', msn: '', selcal: '' }, true);
 }
 
 function loadStoredInfo() {
