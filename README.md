@@ -20,3 +20,5 @@
 4. Navigate to your SimBrief Briefing page.
 5. The extension will automatically fill in the saved information in the appropriate fields.
 6. To update your aircraft information, simply click on the extension icon again and enter new details.
+
+Alternatively and conveniently, you may enter the values as you would in SimBrief and have FillFlight save them automatically.
